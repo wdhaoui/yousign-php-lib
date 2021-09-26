@@ -1,0 +1,31 @@
+services:
+
+    wdhaoui_yousign.client:
+        class: GuzzleHttp\Client
+        arguments:
+            #config is dynamically modified in WdhaouiYousignExtension
+            $config:
+                headers:
+                    content-type: 'application/json'
+                    accept: 'application/json'
+        tags:
+            - { name: csa_guzzle.client }
+
+    GuzzleHttp\Client: '@wdhaoui_yousign.client'
+
+    wdhaoui_yousign.signature:
+        class: Wdhaoui\Yousign\Signature
+        public: false
+        arguments:
+            - '@wdhaoui_yousign.client'
+            - '@wdhaoui_yousign.url_generator'
+
+    wdhaoui_yousign.url_generator:
+        class: Wdhaoui\Yousign\Utils\UrlGenerator
+        public: false
+        arguments:
+            - '%wdhaoui_yousign.webapp_url%'
+
+    Wdhaoui\Yousign\Signature: '@wdhaoui_yousign.signature'
+
+    # Resources TODO
